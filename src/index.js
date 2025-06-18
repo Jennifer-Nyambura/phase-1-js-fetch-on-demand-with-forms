@@ -1,5 +1,34 @@
-const init = () => {
-  
-}
+// src/index.js
 
-document.addEventListener('DOMContentLoaded', init);
+const init = () => {
+  const inputForm = document.querySelector("form");
+
+  inputForm.addEventListener("submit", (event) => {
+    event.preventDefault(); // prevent page from refreshing
+
+    const input = document.querySelector("input#searchByID");
+
+    fetch(`http://localhost:3000/movies/${input.value}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Movie not found");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const title = document.querySelector("section#movieDetails h4");
+        const summary = document.querySelector("section#movieDetails p");
+
+        title.innerText = data.title;
+        summary.innerText = data.summary;
+      })
+      .catch((error) => {
+        console.error("Error fetching movie:", error);
+        alert("Movie not found or server is not running.");
+      });
+  });
+};
+
+document.addEventListener("DOMContentLoaded", init);
+
+// Export the init function for testing purposes
